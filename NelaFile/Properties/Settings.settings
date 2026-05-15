@@ -1,0 +1,45 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NelaFile.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SMTP_Server" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OutputFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\aa</Value>
+    </Setting>
+    <Setting Name="VyberZakazek" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SELECT x.VZ_BatchNo,x.ZO_BatchNo,x.Order_no,x.release_no,x.sequence_no,x.part_no,
+MAX((SELECT distinct ip.description FROM IFSAPP.inventory_part ip WHERE ip.part_no = x.part_no AND ip.contract = 'AD')) as part_desc,
+MAX(x.customer_order) as customer_order,MAX(x.customer_line_no) as customer_line_no,
+MAX(x.customer_rel_no) as customer_rel_no,MAX(x.customer_line_item_no) as customer_line_item_no,
+SUM(x.sub_pack_amount) as CelkemKs,MAX((SELECT ci.name FROM IFSAPP.customer_info ci 
+WHERE ci.customer_id = x.customer_no)) as Zakaznik 
+FROM 
+(
+SELECT a.order_no || '-' || a.release_no ||'-' || a.sequence_no as VZ_BatchNo,a.customer_order || '-' || a.customer_line_no ||'-' || a.customer_rel_no as ZO_BatchNo,
+a.order_no,a.release_no,a.sequence_no,a.customer_order,a.customer_line_no,a.customer_rel_no,a.customer_line_item_no,a.part_no,a.sub_pack_amount,a.customer_no 
+FROM IFSAPP.C_BARCODE_SHPORD_TAB a  
+WHERE substr(a.part_no,1,5) 
+IN ('NA601','NA611','NA620','NA622','NA654','NA650','NA720','NA750') 
+AND  to_number(to_char(a.rowversion,'YYYY')) &gt;= 2014 and a.barcode_processed = 'FALSE' and a.customer_order like 'V%') x 
+GROUP by x.VZ_BatchNo,x.ZO_BatchNo,x.Order_no,x.release_no,x.sequence_no,x.part_no 
+HAVING  to_number(substr(substr(x.ZO_BatchNo,2,instr(x.ZO_BatchNo,'-',1,1)-2),1,2)) &gt; 11  
+ORDER BY to_number(substr(x.ZO_BatchNo,2,instr(x.ZO_BatchNo,'-',1,1)-2)) DESC</Value>
+    </Setting>
+    <Setting Name="Info" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Výběr nálepek:
+do data gridu:
+SELECT (c.doc_class || '-' || c.doc_no || '-' ||c.doc_rev || '.' || c.format_size) as FILE_NAME,c.doc_class FROM IFSAPP.DOC_REFERENCE_OBJECT a, IFSAPP.DOC_STRUCTURE b,IFSAPP.DOC_ISSUE_REFERENCE c WHERE a.doc_class = b.doc_class AND a.doc_no = b.doc_no AND a.doc_rev = b.doc_rev AND b.sub_doc_class = c.doc_class AND b.sub_doc_no  = c.doc_no AND b.sub_doc_rev = c.doc_rev AND a.lu_name = 'CustomerOrderLine' AND a.key_value LIKE  'V92002^6^1^%'
+do receptury:
+SELECT distinct file_name 
+FROM IFSAPP.c_labels_ad a 
+WHERE a.order_no = 'V92002' AND  a.line_no = '6' AND  a.release_no = '1' AND  a.line_item_no = '4' AND doc_class LIKE '%KTN%' ORDER BY a.file_name
+
+Nové:
+
+
+</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
