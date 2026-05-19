@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NelaFile</RootNamespace>
     <AssemblyName>NelaFile</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>NelaFile.Program</StartupObject>
     <ApplicationIcon>BRIDGEH.ico</ApplicationIcon>

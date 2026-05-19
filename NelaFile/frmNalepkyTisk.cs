@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Diagnostics;
 using BarTender;
-using Seagull.BarTender.Print;
+//using Seagull.BarTender.Print;
 
 namespace NelaFile
 {
