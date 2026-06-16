@@ -22,6 +22,8 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 
+using Oracle.ManagedDataAccess.Client;
+
 namespace NelaFile
 {
 
@@ -265,7 +267,7 @@ namespace NelaFile
             //sSQL = "select part_no from IFSAPP.inventory_part_TAB WHERE part_no LIKE 'NA%'";
             //string sConString = "Data Source=AD9UPG3;User Id=IFSAPP;Password=mmLPda300m;";
 
-            OracleDataAdapter ad = new OracleDataAdapter();
+            Oracle.ManagedDataAccess.Client.OracleDataAdapter ad = new Oracle.ManagedDataAccess.Client.OracleDataAdapter();
 
             _DS = new DataSet();
             //string sCnString = sConString; //this.ConnString;
@@ -281,9 +283,9 @@ namespace NelaFile
             try
             {
                 string sCnString = "Data Source=" + Globals.TNSNAME + ";User Id=lotyl;Password=123456;";
-                OracleConnection cn = new OracleConnection(sCnString);
+                Oracle.ManagedDataAccess.Client.OracleConnection cn = new Oracle.ManagedDataAccess.Client.OracleConnection(sCnString);
                 cn.Open();
-                OracleCommand command = new OracleCommand(sSQL);
+                Oracle.ManagedDataAccess.Client.OracleCommand command = new Oracle.ManagedDataAccess.Client.OracleCommand(sSQL);
                 command.Connection = cn;
                 ad.SelectCommand = command;
                 ad.Fill(_DS, "aa"); //C_BARCODE_SHPORD_TAB
@@ -514,6 +516,7 @@ namespace NelaFile
             string sNOMINAL_TIME_NA_MULTI = string.Empty;
             string sDelay_step_multi = string.Empty;
             string sAUTO_LABEL = string.Empty;
+            string sCatalog_no = string.Empty;
             string sCatalog_desc = string.Empty;
 
             bool bAlter_CK = false;
@@ -527,7 +530,7 @@ namespace NelaFile
             {
                 int i = 0;
                 // 
-                OracleConnection cn = new OracleConnection(sConString);
+                System.Data.OracleClient.OracleConnection cn = new System.Data.OracleClient.OracleConnection(sConString);
                 cn.Open();
 
                 // jedná se o úsporné balení ?
@@ -619,7 +622,7 @@ namespace NelaFile
                         }   
                         bAlter_CK = true;
                         sBatchNo = _AlterCK_Order_no + "-1";
-                    checkBox_AlterCK.Checked = false;
+                        //checkBox_AlterCK.Checked = false;
                     //
                     // checkBox_AlterCK.Checked = false;
                 }
@@ -643,8 +646,8 @@ namespace NelaFile
                             + (_LINE_ITEM_NO + ("\'" + (" AND doc_class LIKE '%KTN%'" +
                             " AND (upper(file_name) like '%.BTW' OR upper(file_name) like '%.ZPL')" +
                             " ORDER BY a.file_name"))))))))))))));
-                OracleCommand cmdK = new OracleCommand(sSQL_K, cn);
-                OracleDataReader rdK = cmdK.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdK = new System.Data.OracleClient.OracleCommand(sSQL_K, cn);
+                System.Data.OracleClient.OracleDataReader rdK = cmdK.ExecuteReader();
                 if (!rdK.HasRows)
                 {
                     if ((checkBoxOnlyStockOrders.Checked == false))
@@ -711,8 +714,8 @@ namespace NelaFile
                             + " AND (upper(file_name) like '%.BTW' OR upper(file_name) like '%.ZPL')" 
                             + " GROUP BY batch_no,doc_class ORDER BY batch_no,doc_class"))))))))))))));
                 }
-                OracleCommand cmdS = new OracleCommand(sSQL_S, cn);
-                OracleDataReader rdS = cmdS.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdS = new System.Data.OracleClient.OracleCommand(sSQL_S, cn);
+                System.Data.OracleClient.OracleDataReader rdS = cmdS.ExecuteReader();
                 if (!rdS.HasRows)
                 {
                     if ((checkBoxOnlyStockOrders.Checked == false))
@@ -784,8 +787,8 @@ namespace NelaFile
                         " AND c.doc_class LIKE '%PRO%'";
 
                 }
-                OracleCommand cmdP = new OracleCommand(sSQL_P, cn);
-                OracleDataReader rdP = cmdP.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdP = new System.Data.OracleClient.OracleCommand(sSQL_P, cn);
+                System.Data.OracleClient.OracleDataReader rdP = cmdP.ExecuteReader();
                 if (!rdP.HasRows) // NOT !!!!!!!!!!!
                 {
                     if ((checkBoxOnlyStockOrders.Checked == true))
@@ -855,23 +858,23 @@ namespace NelaFile
                 
                 //sConString = (Globals.IFS_VERSION == IFS_Versions.IFS_9 ? Globals.ConString_IFS9 : "Data Source=ADPROD;User ID=lotyl;Password=123456");
 
-                OracleConnection cnO = new OracleConnection(sConString);
+                System.Data.OracleClient.OracleConnection cnO = new System.Data.OracleClient.OracleConnection(sConString);
 
                 sStoredProcedure = "IFSAPP.A0055_ONLINENELA.PRONELU";
 
-                OracleCommand cmdO = new OracleCommand(sStoredProcedure, cnO);
+                System.Data.OracleClient.OracleCommand cmdO = new System.Data.OracleClient.OracleCommand(sStoredProcedure, cnO);
                 cmdO.CommandType = CommandType.StoredProcedure;
                 cmdO.CommandText = "IFSAPP.A0055_ONLINENELA.PRONELU";
                 cmdO.CommandType = CommandType.StoredProcedure;
                 // cmdO.Parameters.Add(New OracleParameter("PZOBATCHNO", OracleType.VarChar, 50)).Value = _ZO_BatchNo
-                cmdO.Parameters.Add(new OracleParameter("PVZBATCHNO", OracleType.VarChar, 50)).Value = _VZ_BatchNo;
-                cmdO.Parameters.Add(new OracleParameter("pOrder_no", OracleType.VarChar, 50)).Value = _Customer_order;
-                cmdO.Parameters.Add(new OracleParameter("pLine_no", OracleType.VarChar, 50)).Value = _LINE_NO;
-                cmdO.Parameters.Add(new OracleParameter("pRelease_no", OracleType.VarChar, 50)).Value = _RELEASE_NO;
-                cmdO.Parameters.Add(new OracleParameter("pLine_item_no", OracleType.VarChar, 50)).Value = _LINE_ITEM_NO;
-                cmdO.Parameters.Add(new OracleParameter("PRESULTSET", OracleType.Cursor)).Direction = ParameterDirection.Output;
+                cmdO.Parameters.Add(new System.Data.OracleClient.OracleParameter("PVZBATCHNO", OracleType.VarChar, 50)).Value = _VZ_BatchNo;
+                cmdO.Parameters.Add(new System.Data.OracleClient.OracleParameter("pOrder_no", OracleType.VarChar, 50)).Value = _Customer_order;
+                cmdO.Parameters.Add(new System.Data.OracleClient.OracleParameter("pLine_no", OracleType.VarChar, 50)).Value = _LINE_NO;
+                cmdO.Parameters.Add(new System.Data.OracleClient.OracleParameter("pRelease_no", OracleType.VarChar, 50)).Value = _RELEASE_NO;
+                cmdO.Parameters.Add(new System.Data.OracleClient.OracleParameter("pLine_item_no", OracleType.VarChar, 50)).Value = _LINE_ITEM_NO;
+                cmdO.Parameters.Add(new System.Data.OracleClient.OracleParameter("PRESULTSET", OracleType.Cursor)).Direction = ParameterDirection.Output;
                 DataSet ds = new DataSet();
-                OracleDataAdapter da = new OracleDataAdapter();
+                System.Data.OracleClient.OracleDataAdapter da = new System.Data.OracleClient.OracleDataAdapter();
                 da.SelectCommand = cmdO;
                 da.Fill(ds);
                 DataTable dt = ds.Tables[0];
@@ -978,7 +981,26 @@ namespace NelaFile
                     }
                     else
                     {
-                        sLine = ("CATALOG_NO = " + row["CATALOG_NO"].ToString());
+                        if (checkBox_AlterCK.Checked)
+                        {
+                            sCatalog_no = XML_ExLabeling_Get_Part_no(_Customer_order, row["CATALOG_NO"].ToString());
+                            if (sCatalog_no == string.Empty)
+                            { 
+                                MessageBox.Show("Děláte soubor pro Ukrajinu a nenašel jsem náhradní katalogové číslo pro " + row["CATALOG_NO"].ToString() + Environment.NewLine +
+                                    "Zkontrolujte, zda je v XML připojeném k zák. objednávce " + _Customer_order + " uvedeno náhradní katalogové číslo pro tento díl.", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                                return;
+                            }
+                            else
+                            {
+                                sLine = ("CATALOG_NO = " + sCatalog_no);
+                            }
+                        }
+                        else
+                        {
+                            sLine = ("CATALOG_NO = " + row["CATALOG_NO"].ToString());
+                        }
+
                     }
                     sw.WriteLine(sLine);
                     // 
@@ -1672,6 +1694,8 @@ namespace NelaFile
                     sw.WriteLine(sLine);
                 }
 
+                checkBox_AlterCK.Checked = false;
+
                 //string sTime = String.Format("{0}-{1}-{2} {3}:{4}:{5}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
                 string sTime = String.Format("{2}.{1}.{0} {3}:{4}:{5}", DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
 
@@ -1862,10 +1886,10 @@ namespace NelaFile
 
             string sSQLp = string.Empty;
 
-           OracleConnection cn = default(OracleConnection);
+           System.Data.OracleClient.OracleConnection cn = default(System.Data.OracleClient.OracleConnection);
             //string sCnString = "Data Source=ADPROD;UID=userbarco;PWD=userbarco";
             string sCnString = "Data Source=" + Globals.TNSNAME + ";User Id=lotyl;Password=123456;";
-            OracleDataAdapter adapter = new OracleDataAdapter();
+            System.Data.OracleClient.OracleDataAdapter adapter = new System.Data.OracleClient.OracleDataAdapter();
 
             _dsNalepky = new DataSet();
             // bere z c_labels_ad, ale nedá PRO
@@ -1888,10 +1912,10 @@ namespace NelaFile
 
             }
 
-            cn = new OracleConnection(sCnString);
+            cn = new System.Data.OracleClient.OracleConnection(sCnString);
             cn.Open();
 
-            OracleCommand cmd = new OracleCommand(sSQLp, cn);
+            System.Data.OracleClient.OracleCommand cmd = new System.Data.OracleClient.OracleCommand(sSQLp, cn);
             //
             adapter.SelectCommand = cmd;
             adapter.Fill(_dsNalepky, "Nalepky");
@@ -2782,7 +2806,7 @@ namespace NelaFile
                 string sSQL_1 = string.Empty;
                 Funkce ff = new Funkce();
                 // 
-                OracleConnection cn = new OracleConnection(sConString);
+                System.Data.OracleClient.OracleConnection cn = new System.Data.OracleClient.OracleConnection(sConString);
                 cn.Open();
                 // adresy vendor a receiver
                 // CUSTOMER_INFO_ADDRESS.ADDRESS2
@@ -2989,8 +3013,8 @@ namespace NelaFile
                 sSQL_K = sSQL_K.Replace("xxLINE_NO", _LINE_NO);
                 sSQL_K = sSQL_K.Replace("xxRELEASE_NO", _RELEASE_NO);
                 sSQL_K = sSQL_K.Replace("xxTypNalepky", "KTN");
-                OracleCommand cmdK = new OracleCommand(sSQL_K, cn);
-                OracleDataReader rdK = cmdK.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdK = new System.Data.OracleClient.OracleCommand(sSQL_K, cn);
+                System.Data.OracleClient.OracleDataReader rdK = cmdK.ExecuteReader();
                 if (!rdK.HasRows)
                 {
                     if ((checkBoxOnlyStockOrders.Checked == false))
@@ -3050,8 +3074,8 @@ namespace NelaFile
                 sSQL_S = sSQL_S.Replace("xxRELEASE_NO", _RELEASE_NO);
                 sSQL_S = sSQL_S.Replace("xxTypNalepky", "STN");
 
-                OracleCommand cmdS = new OracleCommand(sSQL_S, cn);
-                OracleDataReader rdS = cmdS.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdS = new System.Data.OracleClient.OracleCommand(sSQL_S, cn);
+                System.Data.OracleClient.OracleDataReader rdS = cmdS.ExecuteReader();
                 if (!rdS.HasRows)
                 {
                     if ((checkBoxOnlyStockOrders.Checked == false))
@@ -3136,8 +3160,8 @@ namespace NelaFile
                         " AND c.doc_class LIKE '%PRO%'";
 
 
-                OracleCommand cmdP = new OracleCommand(sSQL_P, cn);
-                OracleDataReader rdP = cmdP.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdP = new System.Data.OracleClient.OracleCommand(sSQL_P, cn);
+                System.Data.OracleClient.OracleDataReader rdP = cmdP.ExecuteReader();
                 if (!rdP.HasRows) // NOT !!!!!!!!!!!
                 {
                     if ((checkBoxOnlyStockOrders.Checked == true))
@@ -3924,8 +3948,8 @@ namespace NelaFile
                         string sSQL_Prog = "SELECT a.BATCH_NO,a.item_from,a.item_to,a.delay_ms,a.delay_no,a.box_from,a.box_to" +
                             " FROM IFSAPP.A1135_PROG a WHERE batch_no = '" + _ZO_BatchNo + "'" +
                             " ORDER BY a.item_from";
-                        OracleCommand cmdProg = new OracleCommand(sSQL_Prog, cn);
-                        OracleDataReader rdProg = cmdProg.ExecuteReader();
+                        System.Data.OracleClient.OracleCommand cmdProg = new System.Data.OracleClient.OracleCommand(sSQL_Prog, cn);
+                        System.Data.OracleClient.OracleDataReader rdProg = cmdProg.ExecuteReader();
                         if (!rdProg.HasRows) // NOT !!!!!!!!!!!
                         {
                             MessageBox.Show("Zák. objednávka nemá zadané programování !!" + Environment.NewLine + _ZO_BatchNo);
@@ -4191,9 +4215,9 @@ namespace NelaFile
             //
 
             string sConString = "Data Source=" + Globals.TNSNAME + ";User Id=lotyl;Password=123456;"; ;
-            OracleConnection cn;
-            OracleCommand cm;
-            OracleDataReader rd;
+            System.Data.OracleClient.OracleConnection cn;
+            System.Data.OracleClient.OracleCommand cm;
+            System.Data.OracleClient.OracleDataReader rd;
             StreamWriter sw;
 
             string sLine;
@@ -4225,7 +4249,7 @@ namespace NelaFile
                 string sSQL_1 = string.Empty;
                 Funkce ff = new Funkce();
                 // 
-                cn = new OracleConnection(sConString);
+                cn = new System.Data.OracleClient.OracleConnection(sConString);
                 cn.Open();
                 // adresy vendor a receiver
                 // CUSTOMER_INFO_ADDRESS.ADDRESS2
@@ -4391,8 +4415,8 @@ namespace NelaFile
                 sSQL_K = sSQL_K.Replace("xxLINE_NO", _LINE_NO);
                 sSQL_K = sSQL_K.Replace("xxRELEASE_NO", _RELEASE_NO);
                 sSQL_K = sSQL_K.Replace("xxTypNalepky", "KTN");
-                OracleCommand cmdK = new OracleCommand(sSQL_K, cn);
-                OracleDataReader rdK = cmdK.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdK = new System.Data.OracleClient.OracleCommand(sSQL_K, cn);
+                System.Data.OracleClient.OracleDataReader rdK = cmdK.ExecuteReader();
                 if (!rdK.HasRows)
                 {
                     if ((checkBoxOnlyStockOrders.Checked == false))
@@ -4452,8 +4476,8 @@ namespace NelaFile
                 sSQL_S = sSQL_S.Replace("xxRELEASE_NO", _RELEASE_NO);
                 sSQL_S = sSQL_S.Replace("xxTypNalepky", "STN");
 
-                OracleCommand cmdS = new OracleCommand(sSQL_S, cn);
-                OracleDataReader rdS = cmdS.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdS = new System.Data.OracleClient.OracleCommand(sSQL_S, cn);
+                System.Data.OracleClient.OracleDataReader rdS = cmdS.ExecuteReader();
                 if (!rdS.HasRows)
                 {
                     if ((checkBoxOnlyStockOrders.Checked == false))
@@ -4517,8 +4541,8 @@ namespace NelaFile
                         " AND c.doc_class LIKE '%PRO%'";
 
 
-                OracleCommand cmdP = new OracleCommand(sSQL_P, cn);
-                OracleDataReader rdP = cmdP.ExecuteReader();
+                System.Data.OracleClient.OracleCommand cmdP = new System.Data.OracleClient.OracleCommand(sSQL_P, cn);
+                System.Data.OracleClient.OracleDataReader rdP = cmdP.ExecuteReader();
                 if (!rdP.HasRows) // NOT !!!!!!!!!!!
                 {
                     if ((checkBoxOnlyStockOrders.Checked == true))
@@ -5329,12 +5353,12 @@ namespace NelaFile
 
             try
             {
-                OracleConnection conn = new OracleConnection(sCnString);
+                System.Data.OracleClient.OracleConnection conn = new System.Data.OracleClient.OracleConnection(sCnString);
 
                 conn.Open();
-                OracleCommand cmd = conn.CreateCommand();
+                System.Data.OracleClient.OracleCommand cmd = conn.CreateCommand();
                 cmd.CommandText = sSQLp;
-                OracleDataReader reader = cmd.ExecuteReader();
+                System.Data.OracleClient.OracleDataReader reader = cmd.ExecuteReader();
                 if (reader.HasRows)
                 {
                     while (reader.Read())
@@ -5532,5 +5556,88 @@ namespace NelaFile
 
             }
         }
+        private string XML_ExLabeling_Get_Part_no(string pOrder_no, string pPart_no)
+        {
+            // Funkce f = new Funkce();
+            string sPart_no = string.Empty;
+
+            //string sSQL_Doc_no = "SELECT doc_no FROM doc_title_access WHERE doc_class = 'ZO-XML' AND doc_no like '%" + pOrder_no + "%'";
+
+            string sSQL_Get_XML_BLOB =
+               "SELECT file_data from IFSAPP.EDM_FILE_STORAGE a where a.doc_class = 'ZO-XML' and a.doc_no LIKE '%" + pOrder_no + "%'";
+
+
+            try
+            {
+                using (var conn = new Oracle.ManagedDataAccess.Client.OracleConnection(Globals.ConString))
+                {
+                    conn.Open();
+                
+                
+                    using (var cmd = new Oracle.ManagedDataAccess.Client.OracleCommand(sSQL_Get_XML_BLOB, conn))
+                    {
+                        //cmd.Parameters.Add(new OracleParameter("id", 1));
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                if (reader["file_data"] == DBNull.Value) return string.Empty;
+
+                                byte[] blobBytes = (byte[])reader["file_data"];
+                                var xmlDoc = new XmlDocument();
+                                using (var ms = new MemoryStream(blobBytes))
+                                {
+                                    ms.Position = 0;
+                                    xmlDoc.Load(ms); // correct overload for Stream
+                                }
+                                sPart_no = XML_GetElement_SID(xmlDoc, pPart_no);
+
+                                // hotovo 👍
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            return sPart_no;
+        }
+        public string XML_GetElement_SID(XmlDocument pXML, string pPart_no)
+        {
+            try
+            {
+                // Test
+                XPathNavigator nav = pXML.CreateNavigator();
+                XPathNodeIterator Iterator = nav.Select("Shipment/SummaryItems/SummaryItem");
+                foreach (XPathNavigator book in Iterator)
+                {
+                    XPathNavigator nv = book.SelectSingleNode("ProducerProductCode");
+                    string sBN = nv == null ? string.Empty : nv.Value;
+                    if (sBN.Contains(pPart_no) || pPart_no.Contains(sBN))
+                    {
+                        return sBN;
+                    }
+
+                    //XPathNavigator nvSID = book.SelectSingleNode("@SID");
+                    //string s_SID = nvSID == null ? string.Empty : nvSID.Value;
+                    //if (s_SID == pSID)
+                    //{
+                    //    return sBN;
+                    //}
+
+                }
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return string.Empty;
+            }
+
+        }
+
     }
 }
