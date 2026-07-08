@@ -21,8 +21,8 @@ using System.Xml.Xsl;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
-
-using Oracle.ManagedDataAccess.Client;
+using System.Data.OracleClient;
+//using using System.Data.OracleClient;
 
 namespace NelaFile
 {
@@ -267,7 +267,7 @@ namespace NelaFile
             //sSQL = "select part_no from IFSAPP.inventory_part_TAB WHERE part_no LIKE 'NA%'";
             //string sConString = "Data Source=AD9UPG3;User Id=IFSAPP;Password=mmLPda300m;";
 
-            Oracle.ManagedDataAccess.Client.OracleDataAdapter ad = new Oracle.ManagedDataAccess.Client.OracleDataAdapter();
+            System.Data.OracleClient.OracleDataAdapter ad = new System.Data.OracleClient.OracleDataAdapter();
 
             _DS = new DataSet();
             //string sCnString = sConString; //this.ConnString;
@@ -282,10 +282,13 @@ namespace NelaFile
             }
             try
             {
+                string sEzConnect = "cz-ifs9-db01.austin.cz:1521/" + Globals.TNSNAME + ";";
+
                 string sCnString = "Data Source=" + Globals.TNSNAME + ";User Id=lotyl;Password=123456;";
-                Oracle.ManagedDataAccess.Client.OracleConnection cn = new Oracle.ManagedDataAccess.Client.OracleConnection(sCnString);
+                //string sCnString = "User Id=lotyl;Password=123456;" + sEzConnect;
+                System.Data.OracleClient.OracleConnection cn = new System.Data.OracleClient.OracleConnection(sCnString);
                 cn.Open();
-                Oracle.ManagedDataAccess.Client.OracleCommand command = new Oracle.ManagedDataAccess.Client.OracleCommand(sSQL);
+                System.Data.OracleClient.OracleCommand command = new System.Data.OracleClient.OracleCommand(sSQL);
                 command.Connection = cn;
                 ad.SelectCommand = command;
                 ad.Fill(_DS, "aa"); //C_BARCODE_SHPORD_TAB
@@ -1346,6 +1349,10 @@ namespace NelaFile
                     else
                     {
                         sLine = ("NOTE = " + row["NOTE"].ToString());
+                    }
+                    if (checkBox_AlterCK.Checked)
+                    {
+                        sLine = ("NOTE = " + _Customer_order.ToString());
                     }
                     sw.WriteLine(sLine);
                     // 
@@ -5569,12 +5576,12 @@ namespace NelaFile
 
             try
             {
-                using (var conn = new Oracle.ManagedDataAccess.Client.OracleConnection(Globals.ConString))
+                System.Data.OracleClient.OracleConnection conn = new System.Data.OracleClient.OracleConnection(Globals.ConString);
                 {
                     conn.Open();
                 
                 
-                    using (var cmd = new Oracle.ManagedDataAccess.Client.OracleCommand(sSQL_Get_XML_BLOB, conn))
+                    using (var cmd = new System.Data.OracleClient.OracleCommand(sSQL_Get_XML_BLOB, conn))
                     {
                         //cmd.Parameters.Add(new OracleParameter("id", 1));
                         using (var reader = cmd.ExecuteReader())
