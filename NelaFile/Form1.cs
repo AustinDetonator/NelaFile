@@ -545,6 +545,7 @@ namespace NelaFile
                             " AND  a.line_no = '" + _LINE_NO + "'" +
                             " AND  a.rel_no = '" + _RELEASE_NO + "'";
 
+                // !!! Úsporné balení se již nepoužívá na NELE !!!  ------->
                 bool bUsporneBaleni = ff.Oracle_Exists(sConString, sSQL_UsporneBaleni, ref sErr);
                 if (bUsporneBaleni)
                 {
@@ -577,10 +578,16 @@ namespace NelaFile
                     sDelay_step_multi = ff.Oracle_GetValue(sConString, sSQL_Multi, "delay_step_multi", ref sErr);
 
                 }
+                // <------ !!! Úsporné balení se již nepoužívá na NELE !!!
+
                 // 
                 // zkontroluj country
                 string sSQL_Country = "select a.country from IFSAPP.A0000_CustomerByOrderNo a where a.ORDER_NO = '" + _Customer_order + "'";
                 string sCountry = ff.Oracle_GetValue(sConString, sSQL_Country, ref sErr);
+                // MK 2026-11-12: Přidat pro nové atributy (#98507 Vlastička)
+                string sSQL_CountryName = "select a.country_desc from IFSAPP.A0000_CustomerByOrderNo a where a.ORDER_NO = '" + _Customer_order + "'";
+                string sCountryName = ff.Oracle_GetValue(sConString, sSQL_CountryName, ref sErr);
+
                 if (sErr != string.Empty)
                 {
                     MessageBox.Show("Nenašel Country v zák. objednávce", sErr);
@@ -648,6 +655,7 @@ namespace NelaFile
                             + (_RELEASE_NO + ("\'" + (" AND  a.line_item_no = \'"
                             + (_LINE_ITEM_NO + ("\'" + (" AND doc_class LIKE '%KTN%'" +
                             " AND (upper(file_name) like '%.BTW' OR upper(file_name) like '%.ZPL')" +
+                            " AND upper(file_name) like '%NEL%'" +
                             " ORDER BY a.file_name"))))))))))))));
                 System.Data.OracleClient.OracleCommand cmdK = new System.Data.OracleClient.OracleCommand(sSQL_K, cn);
                 System.Data.OracleClient.OracleDataReader rdK = cmdK.ExecuteReader();
@@ -703,9 +711,8 @@ namespace NelaFile
                     sSQL_S = Globals.SQL_Nalepky_From_DMS_IFS9 +
                         _Customer_order + "^" + _LINE_NO + "^" + _RELEASE_NO + "^%'" +
                         " AND c.doc_class LIKE '%STN%'" +
-                        " AND (upper(d.file_name) like '%.BTW' OR upper(d.file_name) like '%.ZPL')";
-
-                        ;
+                        " AND (upper(d.file_name) like '%.BTW' OR upper(d.file_name) like '%.ZPL')" +
+                        " AND upper(d.file_name) like '%NEL%'";
                 }
                 else
                 { 
@@ -714,7 +721,8 @@ namespace NelaFile
                             + (_LINE_NO + ("\'" + (" AND  a.release_no = \'"
                             + (_RELEASE_NO + ("\'" + (" AND  a.line_item_no = \'" 
                             + (_LINE_ITEM_NO + ("\'" + (" AND doc_class LIKE '%STN%'" 
-                            + " AND (upper(file_name) like '%.BTW' OR upper(file_name) like '%.ZPL')" 
+                            + " AND (upper(file_name) like '%.BTW' OR upper(file_name) like '%.ZPL')"
+                            + " AND upper(file_name) like '%NEL%'"
                             + " GROUP BY batch_no,doc_class ORDER BY batch_no,doc_class"))))))))))))));
                 }
                 System.Data.OracleClient.OracleCommand cmdS = new System.Data.OracleClient.OracleCommand(sSQL_S, cn);
@@ -1031,8 +1039,9 @@ namespace NelaFile
                     //if (bUsporneBaleni)
                     //{
                     //97_PACKAGE_QTY_MULTI;98_NOMINAL_TIME_NA_MULTI;99_DELAY_STEP_MULTI 
-                    sLine = "PACKAGE_QTY_MULTI = " + sPACKAGE_QTY_MULTI;
-                    sw.WriteLine(sLine);
+                    // MK 2026-11-12: Zrušeno (#98507 Vlastička)
+                    //sLine = "PACKAGE_QTY_MULTI = " + sPACKAGE_QTY_MULTI;
+                    //sw.WriteLine(sLine);
                     //}
                     // 
                     if ((row["SMALL_PACKAGE_QTY"].GetType() == typeof(DBNull)))
@@ -1246,17 +1255,18 @@ namespace NelaFile
 
                     sw.WriteLine(sLine);
                     //
-                    if (bUsporneBaleni)
-                    {
-                        //97_PACKAGE_QTY_MULTI;98_NOMINAL_TIME_NA_MULTI;99_DELAY_STEP_MULTI 
-                        sLine = "NOMINAL_TIME_NA_MULTI = " + sNOMINAL_TIME_NA_MULTI;
-                        sw.WriteLine(sLine);
-                    }
-                    else
-                    {
-                        sLine = "NOMINAL_TIME_NA_MULTI = ";
-                        sw.WriteLine(sLine);
-                    }
+                    // MK 2026-11-12: Zrušeno (#98507 Vlastička)
+                    //if (bUsporneBaleni)
+                    //{
+                    //    //97_PACKAGE_QTY_MULTI;98_NOMINAL_TIME_NA_MULTI;99_DELAY_STEP_MULTI 
+                    //    sLine = "NOMINAL_TIME_NA_MULTI = " + sNOMINAL_TIME_NA_MULTI;
+                    //    sw.WriteLine(sLine);
+                    //}
+                    //else
+                    //{
+                    //    sLine = "NOMINAL_TIME_NA_MULTI = ";
+                    //    sw.WriteLine(sLine);
+                    //}
 
                     // 
                     if ((row["ST_LENGTH"].GetType() == typeof(DBNull)))
@@ -1288,19 +1298,25 @@ namespace NelaFile
                     //if (bUsporneBaleni)
                     //{
                     //97_PACKAGE_QTY_MULTI;98_NOMINAL_TIME_NA_MULTI;99_DELAY_STEP_MULTI 
-                    sLine = "DELAY_STEP_MULTI  = " + sDelay_step_multi;
-                    sw.WriteLine(sLine);
+
+                    // MK 2026-11-12: Zrušeno (#98507 Vlastička)
+                    //sLine = "DELAY_STEP_MULTI  = " + sDelay_step_multi;
+                    //sw.WriteLine(sLine);
+
                     //}
-                    if (bUsporneBaleni)
-                    {
-                        sLine = "SEQ_NUM_SHIFT = 2";
-                        sw.WriteLine(sLine);
-                    }
-                    else
-                    {
-                        sLine = "SEQ_NUM_SHIFT =";
-                        sw.WriteLine(sLine);
-                    }
+
+                    // MK 2026-11-12: Zrušeno (#98507 Vlastička)
+                    //if (bUsporneBaleni)
+                    //{
+                    //    sLine = "SEQ_NUM_SHIFT = 2";
+                    //    sw.WriteLine(sLine);
+                    //}
+                    //else
+                    //{
+                    //    sLine = "SEQ_NUM_SHIFT =";
+                    //    sw.WriteLine(sLine);
+                    //}
+
                     // 
                     if ((row["TESTING_STATION_NUMBER"].GetType() == typeof(DBNull)))
                     {
@@ -1679,6 +1695,12 @@ namespace NelaFile
                 string sSQL_UFI = "select ch.CF$_UFI_CODE_A1149 from IFSAPP.A1135_INVPART_CHAR_ALL_CFV ch where ch.CONTRACT = 'AD' and ch.PART_NO = '" + _PART_NO + "' AND ch.CHARACTERISTIC_CODE = 'W001'";
                 string sUFI_CODE = ff.Oracle_GetValue(sConString, sSQL_UFI, ref sErr);
                 sLine = "UFI_CODE = " + sUFI_CODE;
+                sw.WriteLine(sLine);
+
+                // MK 2026-11-12: Přidáno (#98507 Vlastička)
+                sLine = "RECEIVER_COUNTRY = " + sCountryName;
+                sw.WriteLine(sLine);
+                sLine = "RECEIVER_FAX = " + sCountry;
                 sw.WriteLine(sLine);
 
                 //
@@ -2125,7 +2147,8 @@ namespace NelaFile
                 foreach (DataRow row in dt.Rows)
                 {
                     sNalepka = row[0].ToString().Trim();
-                    if (sNalepka.Contains("-KTN-") || sNalepka.Contains("-STN-") || sNalepka.Contains("-PRO-")) // || sNalepka.Contains("-SBS-")
+                    if ( (sNalepka.Contains("-KTN-") || sNalepka.Contains("-STN-") || sNalepka.Contains("-PRO-")) // || sNalepka.Contains("-SBS-")
+                         && (sNalepka.Contains("NEL")) )
                     {
                         //continue;
                     }
