@@ -82,7 +82,10 @@
     <Reference Include="Seagull.BarTender.Print">
       <HintPath>..\..\..\Program Files\Seagull\BarTender Suite\SDK\Assemblies\Seagull.BarTender.Print.dll</HintPath>
     </Reference>
-    <Reference Include="SpreadsheetGear2012, Version=7.1.1.119, Culture=neutral, PublicKeyToken=39c186f5904944ec, processorArchitecture=MSIL" />
+    <Reference Include="SpreadsheetGear2012, Version=7.1.1.119, Culture=neutral, PublicKeyToken=39c186f5904944ec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\SpreadsheetGear2012.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Configuration.Install" />
