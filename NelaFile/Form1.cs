@@ -1703,6 +1703,7 @@ namespace NelaFile
                 sLine = "RECEIVER_FAX = " + sCountry;
                 sw.WriteLine(sLine);
 
+
                 //
                 if (checkBoxDETONATOR_APLIC.Checked) // doplněno 22.9.2014 Senkerik
                 {
