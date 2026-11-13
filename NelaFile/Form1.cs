@@ -712,6 +712,7 @@ namespace NelaFile
                         _Customer_order + "^" + _LINE_NO + "^" + _RELEASE_NO + "^%'" +
                         " AND c.doc_class LIKE '%STN%'" +
                         " AND (upper(d.file_name) like '%.BTW' OR upper(d.file_name) like '%.ZPL')" +
+                        // MK 2026-11-12: Přidat podmínku (#98507 Vlastička)
                         " AND upper(d.file_name) like '%NEL%'";
                 }
                 else
@@ -722,6 +723,7 @@ namespace NelaFile
                             + (_RELEASE_NO + ("\'" + (" AND  a.line_item_no = \'" 
                             + (_LINE_ITEM_NO + ("\'" + (" AND doc_class LIKE '%STN%'" 
                             + " AND (upper(file_name) like '%.BTW' OR upper(file_name) like '%.ZPL')"
+                            // MK 2026-11-12: Přidat podmínku (#98507 Vlastička)
                             + " AND upper(file_name) like '%NEL%'"
                             + " GROUP BY batch_no,doc_class ORDER BY batch_no,doc_class"))))))))))))));
                 }
@@ -2218,74 +2220,6 @@ namespace NelaFile
                             //    "Zkontrolujte zda soubor existuje v IFS (není na úložišti)!!"), "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
 
-                //    }
-                //    else
-                //    {
-                //        if (!GrantAccess(sCesta + sNalepka, sCesta))
-                //        { return; }
-                //        if (File.Exists(sCesta + sNalepka))
-                //        {
-                //            File.SetAttributes(sCesta + sNalepka, FileAttributes.Normal);
-                //            File.Delete(sCesta + sNalepka);
-                //        }
-                //        if (!Ftp_CopyFile(sNalepka, sCesta + sNalepka, ref sErr))
-                //        {
-                //            //MessageBox.Show(sErr, "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        
-                //            // kontrola existence složky
-                //            if (!Directory.Exists(sPathLocal))
-                //            { 
-                //                try
-                //                {
-                //                    Directory.CreateDirectory(sPathLocal);
-                //                }
-                //                catch (Exception exx)
-                //                {
-                //                    MessageBox.Show(exx.Message.ToString());
-                //                    continue;
-                //                }
-                //            }
-                //            // kopíruju z ftp na cečko a potom do požadované složky zadané v programu
-                //            if (!Ftp_CopyFile(sNalepka, sPathLocal + sNalepka, ref sErr))
-                //            {
-                //                MessageBox.Show(sNalepka + Environment.NewLine + Environment.NewLine +
-                //                    "Zkontrolujte zda soubor existuje v IFS (není na ftp)!!", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //            }
-                //            else
-                //            {
-                //                // copy do zadané složky
-                //                File.Copy(sPathLocal + sNalepka, sCesta + sNalepka, true);
-                //                try
-                //                {
-                //                    if (GrantAccess(sCesta + sNalepka, sCesta))
-                //                    {
-                //                        File.SetAttributes(sCesta + sNalepka, FileAttributes.Normal);
-                //                        File.SetCreationTime(sCesta + sNalepka, DateTime.Now);
-                //                        File.SetLastWriteTime(sCesta + sNalepka, DateTime.Now);
-                //                        File.SetLastAccessTime(sCesta + sNalepka, DateTime.Now);
-                //                    }
-                //                }
-                //                catch (Exception ex2)
-                //                {
-                //                    MessageBox.Show(ex2.Message.ToString());
-                //                }
-                //            }
-
-                //        }
-                //        else
-                //        {
-                //        }
-                //    }
-                //    //FtpClient ftp1 = new FtpClient();
-                //    //if (ftp1.ftp_download("BAP01", "IFSFTP", "IfSftP2Ad", "Nalepky",sNalepka,sCesta+sNalepka) == false)
-                //    //    {
-                //    //        MessageBox.Show("Chyba","Nepodařilo se zkopírovat nálepku : " + Environment.NewLine + sNalepka
-                //    //   ,MessageBoxButtons.OK,MessageBoxIcon.Error);
-
-                //    //    ftp1.Close();
-                //    //    return;
-                //    //}
-                //    //ftp1.Close();
                 }
                 if (pNotify)
                 { 
