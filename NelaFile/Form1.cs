@@ -2148,6 +2148,7 @@ namespace NelaFile
                 {
                     sNalepka = row[0].ToString().Trim();
                     if ( (sNalepka.Contains("-KTN-") || sNalepka.Contains("-STN-") || sNalepka.Contains("-PRO-")) // || sNalepka.Contains("-SBS-")
+                         // MK 2026-11-12: Přidat podmínku (#98507 Vlastička)
                          && (sNalepka.Contains("NEL")) )
                     {
                         //continue;
