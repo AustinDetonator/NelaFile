@@ -539,6 +539,7 @@ namespace NelaFile
                 }
 
             }
+
             this.Cursor = Cursors.WaitCursor;
 
             sw = new StreamWriter(sFile, false, System.Text.Encoding.Default);
