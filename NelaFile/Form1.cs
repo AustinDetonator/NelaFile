@@ -526,6 +526,23 @@ namespace NelaFile
             string sFile = (textBoxFolderToSave.Text.Trim() + ("\\NELA_"
             + (_VZ_BatchNo + ".TXT")));
 
+            if (!Directory.Exists(textBoxFolderToSave.Text.Trim()))
+            {
+                DialogResult ss = MessageBox.Show("Složka neexistuje" + Environment.NewLine + textBoxFolderToSave.Text.Trim() + Environment.NewLine + "Chcete ji vytvořit?", "POZOR !!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (ss == DialogResult.Yes)
+                {
+                    Directory.CreateDirectory(textBoxFolderToSave.Text.Trim());
+                    Directory.CreateDirectory(textBoxFolderToSave.Text.Trim() + "\\Export");
+                }
+                else
+                {
+                    this.Cursor = Cursors.Default;
+                    return;
+                }
+
+            }
+
+
             sw = new StreamWriter(sFile, false, System.Text.Encoding.Default);
 
 
