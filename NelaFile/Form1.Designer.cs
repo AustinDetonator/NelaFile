@@ -98,6 +98,7 @@
             this.tsslVersion = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslDB = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslDuration = new System.Windows.Forms.ToolStripStatusLabel();
+            this.labelFolderExport = new System.Windows.Forms.Label();
             this.contextMenuStripMain.SuspendLayout();
             this.contextMenuStripTXTFile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_XML_Info)).BeginInit();
@@ -382,6 +383,7 @@
             // 
             this.panelTextBoxy.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelTextBoxy.Controls.Add(this.labelFolderExport);
             this.panelTextBoxy.Controls.Add(this.pictureBox_XML_Info);
             this.panelTextBoxy.Controls.Add(this.textBoxNalepka);
             this.panelTextBoxy.Controls.Add(this.buttonOpen);
@@ -393,7 +395,7 @@
             // 
             // textBoxNalepka
             // 
-            this.textBoxNalepka.Location = new System.Drawing.Point(578, 11);
+            this.textBoxNalepka.Location = new System.Drawing.Point(717, 11);
             this.textBoxNalepka.Name = "textBoxNalepka";
             this.textBoxNalepka.Size = new System.Drawing.Size(460, 20);
             this.textBoxNalepka.TabIndex = 5;
@@ -401,7 +403,7 @@
             // buttonOpen
             // 
             this.buttonOpen.Image = ((System.Drawing.Image)(resources.GetObject("buttonOpen.Image")));
-            this.buttonOpen.Location = new System.Drawing.Point(506, 10);
+            this.buttonOpen.Location = new System.Drawing.Point(596, 10);
             this.buttonOpen.Name = "buttonOpen";
             this.buttonOpen.Size = new System.Drawing.Size(40, 22);
             this.buttonOpen.TabIndex = 4;
@@ -410,7 +412,7 @@
             // 
             // textBoxFolderToSave
             // 
-            this.textBoxFolderToSave.Location = new System.Drawing.Point(12, 12);
+            this.textBoxFolderToSave.Location = new System.Drawing.Point(102, 12);
             this.textBoxFolderToSave.Name = "textBoxFolderToSave";
             this.textBoxFolderToSave.Size = new System.Drawing.Size(488, 20);
             this.textBoxFolderToSave.TabIndex = 0;
@@ -819,6 +821,15 @@
             this.tsslDuration.Name = "tsslDuration";
             this.tsslDuration.Size = new System.Drawing.Size(0, 20);
             // 
+            // labelFolderExport
+            // 
+            this.labelFolderExport.AutoSize = true;
+            this.labelFolderExport.Location = new System.Drawing.Point(4, 15);
+            this.labelFolderExport.Name = "labelFolderExport";
+            this.labelFolderExport.Size = new System.Drawing.Size(92, 13);
+            this.labelFolderExport.TabIndex = 34;
+            this.labelFolderExport.Text = "Složka pro export:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -931,6 +942,7 @@
         private System.Windows.Forms.TextBox textBoxFolder_SL_Nalepky;
         private System.Windows.Forms.CheckBox checkBoxFLAG_APPLIC;
         private System.Windows.Forms.CheckBox checkBox_AlterCK;
+        private System.Windows.Forms.Label labelFolderExport;
     }
 }
 

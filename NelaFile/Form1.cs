@@ -527,11 +527,15 @@ namespace NelaFile
 
             if (!Directory.Exists(textBoxFolderToSave.Text.Trim()))
             {
-                DialogResult ss = MessageBox.Show("Složka neexistuje" + Environment.NewLine + textBoxFolderToSave.Text.Trim() + Environment.NewLine + "Chcete ji vytvořit?", "POZOR !!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult ss = MessageBox.Show("Složka neexistuje" + Environment.NewLine + textBoxFolderToSave.Text.Trim() + 
+                    Environment.NewLine + "Zkontrolujte zadání v textovém boxu'Složka pro Export'" +
+                    Environment.NewLine +
+                    Environment.NewLine + "Nebo ji chcete teď vytvořit?", "POZOR !!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (ss == DialogResult.Yes)
                 {
                     Directory.CreateDirectory(textBoxFolderToSave.Text.Trim());
                     Directory.CreateDirectory(textBoxFolderToSave.Text.Trim() + "\\Export");
+                    MessageBox.Show("Složka vytvořena " + Environment.NewLine + textBoxFolderToSave.Text.Trim()); 
                 }
                 else
                 {
